@@ -103,5 +103,5 @@ def result_page_render():
     # session.update(DEFAULT_SESSION)
     # return response
 
-if __name__ == '__main__':
-    app.run()
+# if __name__ == '__main__':
+#     app.run()
