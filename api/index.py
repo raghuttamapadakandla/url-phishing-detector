@@ -1,9 +1,12 @@
-from flask import Flask
-import main as application  # Import your Flask app
+import sys
+import os
 
-# Vercel requires a WSGI application
-app = application
+# Add app directory to Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# For local development
+from app import create_app
+
+app = create_app()
+
 if __name__ == "__main__":
     app.run()

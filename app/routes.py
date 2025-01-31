@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Blueprint, render_template, request, session, redirect
 import check_phish
 import time
 
-app = Flask(__name__)
-app.secret_key = b'\xeb\xa2\xc9\x1b#\x84\xb8\x1cjq\xc0\x1e3\x11+\xc9'
+main = Blueprint('main', __name__)
 
 DEFAULT_SESSION = {
     'value_check': False,
@@ -16,12 +15,12 @@ DEFAULT_SESSION = {
 MAX_RETRIES = 30  # 30 seconds maximum wait
 CHECK_INTERVAL = 1  # Check every 1 second
 
-@app.route('/', methods=['GET'])
+@main.route('/', methods=['GET'])
 def render_home():
     session.update(DEFAULT_SESSION)
     return render_template('home.html')
 
-@app.route('/', methods=['POST'])
+@main.route('/', methods=['POST'])
 def get_domain():
     session.update(DEFAULT_SESSION)
     domain = request.form.get('Domain')
@@ -30,7 +29,7 @@ def get_domain():
         session['value_check'] = True
     return redirect('/check')
 
-@app.route('/check')
+@main.route('/check')
 def check_domain():
     if not session.get('value_check'):
         return redirect('/')
@@ -75,7 +74,7 @@ def check_domain():
     session['value_check'] = False
     return redirect('/results')
 
-@app.route('/results')
+@main.route('/results')
 def result_page_render():
     verdict = session.get('verdict', 'error')
     
@@ -104,4 +103,4 @@ def result_page_render():
     # return response
 
 if __name__ == '__main__':
-    app.run()
+    main.run()
